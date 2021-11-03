@@ -26,9 +26,10 @@
         //use the optimizing pure strategy based on that
         if(intervalCount == 5)
         {
-            probabilites = new float[]{1.f, 0.f, 0.f, 0.f, 0.f};
+            computeProbabilities();
+            oppActions = new Action[intervalCount];
+            intervalCount = 0;
             equilibrium = false;
-            intervalCount = 5;
         }
         intervalCount++;
         checkEquilibrium();
@@ -91,11 +92,11 @@
         }
 
         probabilites = new float[]{
-            (float)actionCounts[0]/2.f/intervalCount, 
-            (float)actionCounts[1]/2.f/intervalCount, 
-            (float)actionCounts[2]/2.f/intervalCount, 
-            (float)actionCounts[3]/2.f/intervalCount, 
-            (float)actionCounts[4]/2.f/intervalCount};
+            (float)actionCounts[0]/2.f/(float)intervalCount, 
+            (float)actionCounts[1]/2.f/(float)intervalCount, 
+            (float)actionCounts[2]/2.f/(float)intervalCount, 
+            (float)actionCounts[3]/2.f/(float)intervalCount, 
+            (float)actionCounts[4]/2.f/(float)intervalCount};
     }
 
     //method to check if the bot has hit equilibrium
