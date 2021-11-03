@@ -1,6 +1,6 @@
 /** An optmiized RPSLS player.
   * 
-  * @author RR
+  * @author Brady
   */
   public class OptimalBot implements RoShamBot {
  
@@ -90,13 +90,17 @@
                 actionCounts[3]++;
             }
         }
-
+        float firt_prob = (float)actionCounts[0]/2.f/(float)intervalCount;
+        float sec_prob = first_prob + (float)actionCounts[1]/2.f/(float)intervalCount;
+        float third_prob = sec_prob + (float)actionCounts[2]/2.f/(float)intervalCount;
+        float fourth_prob = third_prob + (float)actionCounts[3]/2.f/(float)intervalCount;
+        float fifth_prob = fourth_prob + (float)actionCounts[4]/2.f/(float)intervalCount;
         probabilites = new float[]{
-            (float)actionCounts[0]/2.f/(float)intervalCount, 
-            (float)actionCounts[1]/2.f/(float)intervalCount, 
-            (float)actionCounts[2]/2.f/(float)intervalCount, 
-            (float)actionCounts[3]/2.f/(float)intervalCount, 
-            (float)actionCounts[4]/2.f/(float)intervalCount};
+            first_prob, 
+            sec_prob, 
+            third_prob, 
+            fourth_prob, 
+            fifth_prob};
     }
 
     //method to check if the bot has hit equilibrium
