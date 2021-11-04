@@ -48,32 +48,32 @@
         if (coinFlip <= probabilites[0])
         {
             totalCounts[0]++;
-            System.out.print(totalCounts);
+            System.out.println(totalCounts.toString());
             return Action.ROCK;
         }
         else if (coinFlip <= probabilites[1])
         {
             totalCounts[1]++;
-            System.out.print(totalCounts);
+            System.out.println(totalCounts.toString());
             return Action.PAPER;
         }   
         else if (coinFlip <= probabilites[2])
         {
             totalCounts[2]++;
-            System.out.print(totalCounts);
+            System.out.println(totalCounts.toString());
             return Action.SCISSORS;
         }
         else if (coinFlip <= probabilites[3])
         {
             totalCounts[3]++;
-            System.out.print(totalCounts);
+            System.out.println(totalCounts.toString());
             return Action.LIZARD;
         }
             
         else 
         {
             totalCounts[4]++;
-            System.out.print(totalCounts);
+            System.out.println(totalCounts.toString());
             return Action.SPOCK;
         }
             
