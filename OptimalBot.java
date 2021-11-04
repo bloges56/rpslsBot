@@ -101,11 +101,11 @@
                 actionCounts[0]--;
             }
         }
-        float first_prob = (float)actionCounts[0]/2.f/(float)intervalCount;
-        float sec_prob = first_prob + (float)actionCounts[1]/2.f/(float)intervalCount;
-        float third_prob = sec_prob + (float)actionCounts[2]/2.f/(float)intervalCount;
-        float fourth_prob = third_prob + (float)actionCounts[3]/2.f/(float)intervalCount;
-        float fifth_prob = fourth_prob + (float)actionCounts[4]/2.f/(float)intervalCount;
+        float first_prob = (float)actionCounts[0]/(float)intervalCount;
+        float sec_prob = first_prob + (float)actionCounts[1]/(float)intervalCount;
+        float third_prob = sec_prob + (float)actionCounts[2]/(float)intervalCount;
+        float fourth_prob = third_prob + (float)actionCounts[3]/(float)intervalCount;
+        float fifth_prob = fourth_prob + (float)actionCounts[4]/(float)intervalCount;
         probabilites = new float[]{
             first_prob, 
             sec_prob, 
