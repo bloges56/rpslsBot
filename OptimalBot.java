@@ -100,7 +100,7 @@
                 actionCounts[0]--;
             }
         }
-        float firt_prob = (float)actionCounts[0]/2.f/(float)intervalCount;
+        float first_prob = (float)actionCounts[0]/2.f/(float)intervalCount;
         float sec_prob = first_prob + (float)actionCounts[1]/2.f/(float)intervalCount;
         float third_prob = sec_prob + (float)actionCounts[2]/2.f/(float)intervalCount;
         float fourth_prob = third_prob + (float)actionCounts[3]/2.f/(float)intervalCount;

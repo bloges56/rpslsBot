@@ -3,7 +3,7 @@ import java.util.concurrent.ThreadLocalRandom;
   * 
   * @author Paul, Brady 
   */
-  public class OptimalBot implements RoShamBot {
+  public class DeceptiveBot implements RoShamBot {
     private Action[] moves = {Action.ROCK, Action.PAPER,Action.SCISSORS,Action.LIZARD,Action.SPOCK};
     private Action deception; //random move selection 
     private Action deceptionCounter; 
@@ -41,7 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
             optimalStrategy();
         }
         else{
-
+            
         }
         strategyCount++;
 
@@ -54,7 +54,7 @@ import java.util.concurrent.ThreadLocalRandom;
             deceptionCounter = Action.LIZARD;
         }
         else if (deception==Action.PAPER){
-            deceptionCounter = Action.Rock;
+            deceptionCounter = Action.ROCK;
         }
         else if (deception ==Action.SCISSORS){
             deceptionCounter = Action.PAPER;
