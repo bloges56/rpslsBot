@@ -7,6 +7,7 @@
     private int intervalCount = 0;
     private int MAX_INTERVALS = 5;
     //store counterations for each action
+    private int[] totalCounts = {0, 0, 0, 0, 0};
     private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
     private boolean equilibrium = false;
     //track results of past five actions
@@ -45,15 +46,37 @@
         double coinFlip = Math.random();
         
         if (coinFlip <= probabilites[0])
+        {
+            totalCounts[0]++;
+            System.out.print(totalCounts);
             return Action.ROCK;
+        }
         else if (coinFlip <= probabilites[1])
+        {
+            totalCounts[1]++;
+            System.out.print(totalCounts);
             return Action.PAPER;
+        }   
         else if (coinFlip <= probabilites[2])
+        {
+            totalCounts[2]++;
+            System.out.print(totalCounts);
             return Action.SCISSORS;
+        }
         else if (coinFlip <= probabilites[3])
+        {
+            totalCounts[3]++;
+            System.out.print(totalCounts);
             return Action.LIZARD;
+        }
+            
         else 
+        {
+            totalCounts[4]++;
+            System.out.print(totalCounts);
             return Action.SPOCK;
+        }
+            
 
     }
 
