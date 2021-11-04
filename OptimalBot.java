@@ -68,26 +68,36 @@
             {
                 actionCounts[1]++;
                 actionCounts[4]++;
+                actionCounts[2]--;
+                actionCounts[3]--;
             }
             if(oppActions[i] == Action.PAPER)
             {
                 actionCounts[2]++;
                 actionCounts[3]++;
+                actionCounts[0]--;
+                actionCounts[4]--;
             }
             if(oppActions[i] == Action.SCISSORS)
             {
                 actionCounts[0]++;
                 actionCounts[4]++;
+                actionCounts[3]--;
+                actionCounts[1]--;
             }
             if(oppActions[i] == Action.LIZARD)
             {
                 actionCounts[0]++;
                 actionCounts[2]++;
+                actionCounts[4]--;
+                actionCounts[1]--;
             }
             if(oppActions[i] == Action.SPOCK)
             {
                 actionCounts[1]++;
                 actionCounts[3]++;
+                actionCounts[2]--;
+                actionCounts[0]--;
             }
         }
 
