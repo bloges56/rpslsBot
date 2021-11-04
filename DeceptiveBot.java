@@ -1,9 +1,15 @@
-/** An optmiized RPSLS player.
+import java.util.concurrent.ThreadLocalRandom;
+/** An optmized RPSLS player.
   * 
-  * @author Brady, Paul
+  * @author Paul, Brady 
   */
   public class OptimalBot implements RoShamBot {
- 
+    private Action[] moves = {Action.ROCK, Action.PAPER,Action.SCISSORS,Action.LIZARD,Action.SPOCK};
+    private Action deception; //random move selection 
+    private Action deceptionCounter; 
+    private int deceptionCount = 0; //deception made from 0-5, 10-15
+
+    private int strategyCount = 0; //number of moves needed before changin strategy
     private int intervalCount = 0;
     //store counterations for each action
     private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
@@ -12,7 +18,7 @@
     private Action[] oppActions = new Action[intervalCount];
     //switch to some random strategy for set amount of moves
         //pick two moves at random and set probabilty to .5
-    
+    private Boolean optimal_strategy =true;
 
     /** Returns an action according to the mixed strategy (0.5, 0.5, 0, 0, 0).
       * 
@@ -22,8 +28,61 @@
       */
     
     public Action getNextMove(Action lastOpponentMove) {
+        if (strategyCount == 20){
+            double coinFlip = Math.random();
+            if (coinFlip<0.5){
+                optimal_strategy =false;
+            }
+            optimal_strategy = true;
+        }
         //find current pure strategy being used by opponent
         //use the optimizing pure strategy based on that
+        if (optimal_strategy){
+            optimalStrategy();
+        }
+        else{
+
+        }
+        strategyCount++;
+
+    }
+    private Action deceptiveStrategy(){
+        if (deceptionCount==0 || deceptionCount==10){
+        int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
+        deception = moves[randomNum];
+        if (deception==Action.ROCK){
+            deceptionCounter = Action.LIZARD;
+        }
+        else if (deception==Action.PAPER){
+            deceptionCounter = Action.Rock;
+        }
+        else if (deception ==Action.SCISSORS){
+            deceptionCounter = Action.PAPER;
+        }
+        else if (deception == Action.LIZARD){
+            deceptionCounter = Action.SPOCK;
+        }
+        else{
+            deceptionCounter = Action.SCISSORS;
+        }
+        }
+        else if (deceptionCount <5){
+            return deception;
+        }
+        else if (deceptionCount <10){
+            return deceptionCounter;
+        }
+        else if (deceptionCount <15){
+            return deception;
+        }
+        else{
+            return deceptionCounter;
+        }
+        deceptionCount++;
+        strategyCount++;
+        
+    }
+    private Action optimalStrategy(){
         if(intervalCount == 5)
         {
             computeProbabilities();
@@ -53,12 +112,11 @@
             return Action.LIZARD;
         else 
             return Action.SPOCK;
-
     }
-
     //compute current pure strategy
         //calculate oppenent's probablity of what action they take next turn
         //assign probability of our action based on that
+    //order: rock, paper, scissors, lizard, and spock
     private void computeProbabilities()
     {
         int[] actionCounts = {0, 0, 0, 0, 0};
@@ -90,7 +148,8 @@
                 actionCounts[3]++;
             }
         }
-        float firt_prob = (float)actionCounts[0]/2.f/(float)intervalCount;
+
+        float first_prob = (float)actionCounts[0]/2.f/(float)intervalCount;
         float sec_prob = first_prob + (float)actionCounts[1]/2.f/(float)intervalCount;
         float third_prob = sec_prob + (float)actionCounts[2]/2.f/(float)intervalCount;
         float fourth_prob = third_prob + (float)actionCounts[3]/2.f/(float)intervalCount;
