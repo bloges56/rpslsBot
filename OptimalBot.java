@@ -5,6 +5,7 @@
   public class OptimalBot implements RoShamBot {
  
     private int intervalCount = 0;
+    private int MAX_INTERVALS = 5;
     //store counterations for each action
     private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
     private boolean equilibrium = false;
@@ -24,7 +25,7 @@
     public Action getNextMove(Action lastOpponentMove) {
         //find current pure strategy being used by opponent
         //use the optimizing pure strategy based on that
-        if(intervalCount == 5)
+        if(intervalCount == MAX_INTERVALS)
         {
             computeProbabilities();
             oppActions = new Action[intervalCount];
@@ -119,7 +120,12 @@
         int count = 0;
         for(int i = 0; i<probabilites.length; i++)
         {
-            if((int)(probabilites[i] * 10) == 2)
+            int probability = 0;
+            if(i!=0)
+            {
+                probability = (int) ((probabilites[i] - probabilites[i-1]) * 10);
+            }
+            if(probability == 2)
             {
                 count++;
             }
@@ -127,6 +133,7 @@
         if(count==5)
         {
             equilibrium = true;
+            System.out.println("hit equilibrium");
         }
     }
 }
