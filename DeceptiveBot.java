@@ -29,21 +29,25 @@ import java.util.concurrent.ThreadLocalRandom;
     
     public Action getNextMove(Action lastOpponentMove) {
         if (strategyCount == 20){
+            strategyCount =0;
             double coinFlip = Math.random();
             if (coinFlip<0.5){
                 optimal_strategy =false;
+                deceptionCount =0;
             }
             optimal_strategy = true;
         }
         //find current pure strategy being used by opponent
         //use the optimizing pure strategy based on that
         if (optimal_strategy){
-            optimalStrategy();
+            strategyCount++;
+            return optimalStrategy();
         }
         else{
-            
+            strategyCount++;
+            return deceptiveStrategy();
         }
-        strategyCount++;
+        
 
     }
     private Action deceptiveStrategy(){
@@ -67,19 +71,19 @@ import java.util.concurrent.ThreadLocalRandom;
         }
         }
         else if (deceptionCount <5){
+            deceptionCount++;
             return deception;
         }
         else if (deceptionCount <10){
+            deceptionCount++;
             return deceptionCounter;
         }
         else if (deceptionCount <15){
+            deceptionCount++;
             return deception;
         }
-        else{
-            return deceptionCounter;
-        }
         deceptionCount++;
-        strategyCount++;
+        return deceptionCounter;
         
     }
     private Action optimalStrategy(){
