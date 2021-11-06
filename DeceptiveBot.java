@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
     private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
     private boolean equilibrium = false;
     //track results of past five actions
-    private Action[] oppActions = new Action[intervalCount];
+    private Action[] oppActions = new Action[5];
     //switch to some random strategy for set amount of moves
         //pick two moves at random and set probabilty to .5
     private Boolean optimal_strategy =true;
@@ -41,6 +41,18 @@ import java.util.concurrent.ThreadLocalRandom;
         //use the optimizing pure strategy based on that
         if (optimal_strategy){
             strategyCount++;
+            if(intervalCount == 5)
+            {
+                computeProbabilities();
+                oppActions = new Action[5];
+                intervalCount = 0;
+                equilibrium = false;
+            }
+            else{
+            oppActions[intervalCount]=lastOpponentMove;
+            }
+            checkEquilibrium();
+            intervalCount++;
             return optimalStrategy();
         }
         else{
@@ -87,16 +99,7 @@ import java.util.concurrent.ThreadLocalRandom;
         
     }
     private Action optimalStrategy(){
-        if(intervalCount == 5)
-        {
-            computeProbabilities();
-            oppActions = new Action[intervalCount];
-            intervalCount = 0;
-            equilibrium = false;
-        }
-        intervalCount++;
-        checkEquilibrium();
-        
+       
         //when we hit equilibrium, probabilites all equal 0.2, then reset to only one move
         if(equilibrium)
         {

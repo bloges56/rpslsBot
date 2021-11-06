@@ -9,7 +9,7 @@
     private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
     private boolean equilibrium = false;
     //track results of past five actions
-    private Action[] oppActions = new Action[intervalCount];
+    private Action[] oppActions = new Action[5];
     //switch to some random strategy for set amount of moves
         //pick two moves at random and set probabilty to .5
     
@@ -27,10 +27,11 @@
         if(intervalCount == 5)
         {
             computeProbabilities();
-            oppActions = new Action[intervalCount];
+            oppActions = new Action[5];
             intervalCount = 0;
             equilibrium = false;
         }
+        oppActions[intervalCount]=lastOpponentMove;
         intervalCount++;
         checkEquilibrium();
         
