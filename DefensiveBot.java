@@ -1,11 +1,4 @@
-import java.util.concurrent.ThreadLocalRandom;
-/** An optmized RPSLS player.
-  * 
-  * @author Paul, Brady 
-  */
-  public class DeceptiveBot implements RoShamBot {
-    private int numWin = 0; // number of wins
-    private boolean defaultStrategy = true; // default move is optimal strategy
+public class DeceptiveBot implements RoShamBot {
     private Action[] moves = {Action.ROCK, Action.PAPER,Action.SCISSORS,Action.LIZARD,Action.SPOCK};
     private Action deception; //random move selection 
     private Action deceptionCounter; 
@@ -15,13 +8,13 @@ import java.util.concurrent.ThreadLocalRandom;
     private int intervalCount = 0;
     //store counterations for each action
     private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
+    private boolean equilibrium = false;
     //track results of past five actions
     private Action[] oppActions = new Action[5];
     //switch to some random strategy for set amount of moves
         //pick two moves at random and set probabilty to .5
     private Boolean optimal_strategy =true;
-    private List<Action> totalOppMoves = new ArrayList<Action>();
-    private List<Action> totalMyMoves = new ArrayList<Action>();
+
     /** Returns an action according to the mixed strategy (0.5, 0.5, 0, 0, 0).
       * 
       * @param lastOpponentMove the action that was played by the opponent on
@@ -30,27 +23,6 @@ import java.util.concurrent.ThreadLocalRandom;
       */
     
     public Action getNextMove(Action lastOpponentMove) {
-
-        if (defaultStrategy){
-        totalOppMoves.add(lastOpponentMove);
-        if (totalOppMoves.size() == 10){
-        computeWins();
-        if (numWin<=3){
-            defaultStrategy = false;
-        }
-        totalOppMoves = new ArrayList<Action>();
-        totalMyMoves = new ArrayList<Action>();
-        }
-        if(intervalCount == 5)
-        {
-            computeProbabilities();
-            oppActions = new Action[5];
-            intervalCount = 0;
-        }
-        optimalStrategy();
-        intervalCount++;
-        }
-        else{
         if (strategyCount == 20){
             strategyCount =0;
             double coinFlip = Math.random();
@@ -69,10 +41,12 @@ import java.util.concurrent.ThreadLocalRandom;
                 computeProbabilities();
                 oppActions = new Action[5];
                 intervalCount = 0;
+                equilibrium = false;
             }
             else{
             oppActions[intervalCount]=lastOpponentMove;
             }
+            checkEquilibrium();
             intervalCount++;
             return optimalStrategy();
         }
@@ -80,7 +54,7 @@ import java.util.concurrent.ThreadLocalRandom;
             strategyCount++;
             return deceptiveStrategy();
         }
-    }
+        
 
     }
     private Action deceptiveStrategy(){
@@ -121,40 +95,25 @@ import java.util.concurrent.ThreadLocalRandom;
     }
     private Action optimalStrategy(){
        
-    
+        //when we hit equilibrium, probabilites all equal 0.2, then reset to only one move
+        if(equilibrium)
+        {
+            return Action.ROCK;
+        }
 
         //return an action depending on current probabilites
         double coinFlip = Math.random();
         
-        if (coinFlip <= probabilites[0]){
-            if (defaultStrategy==true){
-            totalMyMoves.add(Action.ROCK);
-        }
-            return Action.ROCK;}
-        else if (coinFlip <= probabilites[1]){
-            if (defaultStrategy==true){
-                totalMyMoves.add(Action.PAPER);
-            }
+        if (coinFlip <= probabilites[0])
+            return Action.ROCK;
+        else if (coinFlip <= probabilites[1])
             return Action.PAPER;
-        }
-        else if (coinFlip <= probabilites[2]){
-            if (defaultStrategy==true){
-                totalMyMoves.add(Action.SCISSORS);
-            }
+        else if (coinFlip <= probabilites[2])
             return Action.SCISSORS;
-        }
-        else if (coinFlip <= probabilites[3]){
-            if (defaultStrategy==true){
-                totalMyMoves.add(Action.LIZARD);
-            }
+        else if (coinFlip <= probabilites[3])
             return Action.LIZARD;
-        }
-        else{ 
-            if (defaultStrategy==true){
-                totalMyMoves.add(Action.SPOCK);
-            }
+        else 
             return Action.SPOCK;
-        }
     }
     //compute current pure strategy
         //calculate oppenent's probablity of what action they take next turn
@@ -204,31 +163,21 @@ import java.util.concurrent.ThreadLocalRandom;
             fourth_prob, 
             fifth_prob};
     }
-    private void computeWins(){
-    int tempWin = 0;
-    for (int i=0; i<totalOppMoves.length;i++){
-        if(totalMyMoves[i]==Action.ROCK && 
-        (totalOppMoves[i]==Action.SCISSORS || totalOppMoves[i]==Action.LIZARD)){
-            tempWin ++;
+
+    //method to check if the bot has hit equilibrium
+    private void checkEquilibrium()
+    {
+        int count = 0;
+        for(int i = 0; i<probabilites.length; i++)
+        {
+            if((int)(probabilites[i] * 10) == 2)
+            {
+                count++;
+            }
         }
-        else if(totalMyMoves[i]==Action.PAPER && 
-        (totalOppMoves[i]==Action.ROCK || totalOppMoves[i]==Action.SPOCK)){
-            tempWin ++;
+        if(count==5)
+        {
+            equilibrium = true;
         }
-        else if(totalMyMoves[i]==Action.SCISSORS && 
-        (totalOppMoves[i]==Action.PAPER || totalOppMoves[i]==Action.LIZARD)){
-            tempWin ++;
-        }
-        else if(totalMyMoves[i]==Action.LIZARD && 
-        (totalOppMoves[i]==Action.PAPER || totalOppMoves[i]==Action.SPOCK)){
-            tempWin ++;
-        }
-        else if(totalMyMoves[i]==Action.SPOCK && 
-        (totalOppMoves[i]==Action.ROCK || totalOppMoves[i]==Action.SCISSORS)){
-            tempWin ++;
-        }
-        
-    }
-    numWin = tempWin;
     }
 }
