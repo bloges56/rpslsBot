@@ -1,4 +1,14 @@
-public class DeceptiveBot implements RoShamBot {
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.List;
+import java.util.ArrayList;
+/** An optmized RPSLS player.
+  * 
+  * @author Paul, Brady 
+  */
+  public class DefensiveBot implements RoShamBot {
+    private boolean defense = false; // switches to nash equilibrium if it is on
+    private int numWin = 0; // number of wins
+    private boolean defaultStrategy = true; // default move is optimal strategy
     private Action[] moves = {Action.ROCK, Action.PAPER,Action.SCISSORS,Action.LIZARD,Action.SPOCK};
     private Action deception; //random move selection 
     private Action deceptionCounter; 
@@ -8,13 +18,13 @@ public class DeceptiveBot implements RoShamBot {
     private int intervalCount = 0;
     //store counterations for each action
     private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
-    private boolean equilibrium = false;
     //track results of past five actions
     private Action[] oppActions = new Action[5];
     //switch to some random strategy for set amount of moves
         //pick two moves at random and set probabilty to .5
     private Boolean optimal_strategy =true;
-
+    private List<Action> totalOppMoves = new ArrayList<Action>();
+    private List<Action> totalMyMoves = new ArrayList<Action>();
     /** Returns an action according to the mixed strategy (0.5, 0.5, 0, 0, 0).
       * 
       * @param lastOpponentMove the action that was played by the opponent on
@@ -23,6 +33,41 @@ public class DeceptiveBot implements RoShamBot {
       */
     
     public Action getNextMove(Action lastOpponentMove) {
+
+        if (defaultStrategy){
+        totalOppMoves.add(lastOpponentMove);
+        if (totalOppMoves.size() == 10){
+        //computeWins();
+        if (numWin<=3){
+            defaultStrategy = false;
+        }
+        totalOppMoves = new ArrayList<Action>();
+        totalMyMoves = new ArrayList<Action>();
+        }
+        if(intervalCount == 5)
+        {
+            computeProbabilities();
+            oppActions = new Action[5];
+            intervalCount = 0;
+        }
+        intervalCount++;
+        return optimalStrategy();
+        
+        }
+        totalOppMoves.add(lastOpponentMove);
+
+        if (defense){
+            return nashEq(); //nash equilibrium if win rate is low
+        }
+
+        if (totalOppMoves.size() == 15){
+        computeWins();
+        if (numWin<=4){
+            defense=true;
+        }
+        totalOppMoves = new ArrayList<Action>();
+        totalMyMoves = new ArrayList<Action>();
+        }
         if (strategyCount == 20){
             strategyCount =0;
             double coinFlip = Math.random();
@@ -41,12 +86,10 @@ public class DeceptiveBot implements RoShamBot {
                 computeProbabilities();
                 oppActions = new Action[5];
                 intervalCount = 0;
-                equilibrium = false;
             }
             else{
             oppActions[intervalCount]=lastOpponentMove;
             }
-            checkEquilibrium();
             intervalCount++;
             return optimalStrategy();
         }
@@ -54,9 +97,9 @@ public class DeceptiveBot implements RoShamBot {
             strategyCount++;
             return deceptiveStrategy();
         }
-        
-
+   
     }
+    // Lures opponents to make certain moves and then counter those moves
     private Action deceptiveStrategy(){
         if (deceptionCount==0 || deceptionCount==10){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
@@ -95,25 +138,40 @@ public class DeceptiveBot implements RoShamBot {
     }
     private Action optimalStrategy(){
        
-        //when we hit equilibrium, probabilites all equal 0.2, then reset to only one move
-        if(equilibrium)
-        {
-            return Action.ROCK;
-        }
+    
 
         //return an action depending on current probabilites
         double coinFlip = Math.random();
         
-        if (coinFlip <= probabilites[0])
-            return Action.ROCK;
-        else if (coinFlip <= probabilites[1])
+        if (coinFlip <= probabilites[0]){
+            
+           
+            totalMyMoves.add(Action.ROCK);
+
+        
+            return Action.ROCK;}
+        else if (coinFlip <= probabilites[1]){
+            
+            totalMyMoves.add(Action.PAPER);
             return Action.PAPER;
-        else if (coinFlip <= probabilites[2])
+        }
+        else if (coinFlip <= probabilites[2]){
+            
+            totalMyMoves.add(Action.SCISSORS);
             return Action.SCISSORS;
-        else if (coinFlip <= probabilites[3])
+        }
+        else if (coinFlip <= probabilites[3]){
+            
+            totalMyMoves.add(Action.LIZARD);
+            
             return Action.LIZARD;
-        else 
+        }
+        else{ 
+           
+            totalMyMoves.add(Action.SPOCK);
+            
             return Action.SPOCK;
+        }
     }
     //compute current pure strategy
         //calculate oppenent's probablity of what action they take next turn
@@ -163,21 +221,47 @@ public class DeceptiveBot implements RoShamBot {
             fourth_prob, 
             fifth_prob};
     }
-
-    //method to check if the bot has hit equilibrium
-    private void checkEquilibrium()
-    {
-        int count = 0;
-        for(int i = 0; i<probabilites.length; i++)
-        {
-            if((int)(probabilites[i] * 10) == 2)
-            {
-                count++;
-            }
+    //compute wins based on opponent and my moves
+    private void computeWins(){
+    int tempWin = 0;
+    for (int i=0; i<totalOppMoves.size();i++){
+        if(totalMyMoves.get(i)==Action.ROCK && 
+        (totalOppMoves.get(i)==Action.SCISSORS || totalOppMoves.get(i)==Action.LIZARD)){
+            tempWin ++;
         }
-        if(count==5)
-        {
-            equilibrium = true;
+        else if(totalMyMoves.get(i)==Action.PAPER && 
+        (totalOppMoves.get(i)==Action.ROCK || totalOppMoves.get(i)==Action.SPOCK)){
+            tempWin ++;
         }
+        else if(totalMyMoves.get(i)==Action.SCISSORS && 
+        (totalOppMoves.get(i)==Action.PAPER || totalOppMoves.get(i)==Action.LIZARD)){
+            tempWin ++;
+        }
+        else if(totalMyMoves.get(i)==Action.LIZARD && 
+        (totalOppMoves.get(i)==Action.PAPER || totalOppMoves.get(i)==Action.SPOCK)){
+            tempWin ++;
+        }
+        else if(totalMyMoves.get(i)==Action.SPOCK && 
+        (totalOppMoves.get(i)==Action.ROCK || totalOppMoves.get(i)==Action.SCISSORS)){
+            tempWin ++;
+        }
+        
+    }
+    numWin = tempWin;
+    }
+    // returns action based on nash equilibrium
+    private Action nashEq(){
+        double coinFlip = Math.random();
+        
+        if (coinFlip <= 1.0/5.0)
+            return Action.ROCK;
+        else if (coinFlip <= 2.0/5.0)
+            return Action.PAPER;
+        else if (coinFlip <= 3.0/5.0)
+            return Action.SCISSORS;
+        else if (coinFlip <= 4.0/5.0)
+            return Action.LIZARD;
+        else 
+            return Action.SPOCK;
     }
 }

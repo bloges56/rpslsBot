@@ -1,4 +1,7 @@
 import java.util.concurrent.ThreadLocalRandom;
+
+import java.util.List;
+import java.util.ArrayList;
 /** An optmized RPSLS player.
   * 
   * @author Paul, Brady 
@@ -47,10 +50,10 @@ import java.util.concurrent.ThreadLocalRandom;
             oppActions = new Action[5];
             intervalCount = 0;
         }
-        optimalStrategy();
         intervalCount++;
+        return optimalStrategy();
+        
         }
-        else{
         if (strategyCount == 20){
             strategyCount =0;
             double coinFlip = Math.random();
@@ -80,9 +83,9 @@ import java.util.concurrent.ThreadLocalRandom;
             strategyCount++;
             return deceptiveStrategy();
         }
+   
     }
-
-    }
+    // Lures opponents to make certain moves and then counter those moves
     private Action deceptiveStrategy(){
         if (deceptionCount==0 || deceptionCount==10){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
@@ -127,9 +130,11 @@ import java.util.concurrent.ThreadLocalRandom;
         double coinFlip = Math.random();
         
         if (coinFlip <= probabilites[0]){
+            
             if (defaultStrategy==true){
             totalMyMoves.add(Action.ROCK);
         }
+        
             return Action.ROCK;}
         else if (coinFlip <= probabilites[1]){
             if (defaultStrategy==true){
@@ -204,27 +209,28 @@ import java.util.concurrent.ThreadLocalRandom;
             fourth_prob, 
             fifth_prob};
     }
+    //compute wins based on opponent and my moves
     private void computeWins(){
     int tempWin = 0;
-    for (int i=0; i<totalOppMoves.length;i++){
-        if(totalMyMoves[i]==Action.ROCK && 
-        (totalOppMoves[i]==Action.SCISSORS || totalOppMoves[i]==Action.LIZARD)){
+    for (int i=0; i<totalMyMoves.size();i++){
+        if(totalMyMoves.get(i)==Action.ROCK && 
+        (totalOppMoves.get(i)==Action.SCISSORS || totalOppMoves.get(i)==Action.LIZARD)){
             tempWin ++;
         }
-        else if(totalMyMoves[i]==Action.PAPER && 
-        (totalOppMoves[i]==Action.ROCK || totalOppMoves[i]==Action.SPOCK)){
+        else if(totalMyMoves.get(i)==Action.PAPER && 
+        (totalOppMoves.get(i)==Action.ROCK || totalOppMoves.get(i)==Action.SPOCK)){
             tempWin ++;
         }
-        else if(totalMyMoves[i]==Action.SCISSORS && 
-        (totalOppMoves[i]==Action.PAPER || totalOppMoves[i]==Action.LIZARD)){
+        else if(totalMyMoves.get(i)==Action.SCISSORS && 
+        (totalOppMoves.get(i)==Action.PAPER || totalOppMoves.get(i)==Action.LIZARD)){
             tempWin ++;
         }
-        else if(totalMyMoves[i]==Action.LIZARD && 
-        (totalOppMoves[i]==Action.PAPER || totalOppMoves[i]==Action.SPOCK)){
+        else if(totalMyMoves.get(i)==Action.LIZARD && 
+        (totalOppMoves.get(i)==Action.PAPER || totalOppMoves.get(i)==Action.SPOCK)){
             tempWin ++;
         }
-        else if(totalMyMoves[i]==Action.SPOCK && 
-        (totalOppMoves[i]==Action.ROCK || totalOppMoves[i]==Action.SCISSORS)){
+        else if(totalMyMoves.get(i)==Action.SPOCK && 
+        (totalOppMoves.get(i)==Action.ROCK || totalOppMoves.get(i)==Action.SCISSORS)){
             tempWin ++;
         }
         
