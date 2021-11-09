@@ -226,7 +226,7 @@ import java.util.ArrayList;
     //compute wins based on opponent and my moves
     private void computeWins(){
     int tempWin = 0;
-    for (int i=0; i<totalOppMoves.size();i++){
+    for (int i=0; i<totalMyMoves.size();i++){
         if(totalMyMoves.get(i)==Action.ROCK && 
         (totalOppMoves.get(i)==Action.SCISSORS || totalOppMoves.get(i)==Action.LIZARD)){
             tempWin ++;
