@@ -33,11 +33,11 @@ import java.util.ArrayList;
       */
     
     public Action getNextMove(Action lastOpponentMove) {
-
+        // defaultstrategy is optimal strategy, but switches to mixed strategy if optimal strategy doesn't work
         if (defaultStrategy){
         totalOppMoves.add(lastOpponentMove);
         if (totalOppMoves.size() == 10){
-        computeWins();
+        computeWins();  //checks how many wins we have using optimal strategy
         if (numWin<=3){
             defaultStrategy = false;
         }
@@ -54,7 +54,8 @@ import java.util.ArrayList;
         return optimalStrategy();
         
         }
-        if (strategyCount == 20){
+        // switches to mixed strategy if defaultStrategy is false
+        if (strategyCount == 20){  //randomly switches after 20 rounds
             strategyCount =0;
             double coinFlip = Math.random();
             if (coinFlip<0.5){
@@ -85,7 +86,8 @@ import java.util.ArrayList;
         }
    
     }
-    // Lures opponents to make certain moves and then counter those moves
+    // Lures opponents to make certain moves and then counter those moves under the
+    // assumption that the opponent is scanning our moves
     private Action deceptiveStrategy(){
         if (deceptionCount==0 || deceptionCount==10){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
