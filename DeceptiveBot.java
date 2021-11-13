@@ -55,24 +55,43 @@ import java.util.ArrayList;
         
         }
         // switches to mixed strategy if defaultStrategy is false
-     
+        if (strategyCount == 20){  //randomly switches after 20 rounds
+            strategyCount =0;
+            double coinFlip = Math.random();
+            if (coinFlip<0.5){
+                optimal_strategy =false;
+                deceptionCount =0;
+            }
+            optimal_strategy = true;
+        }
         //find current pure strategy being used by opponent
         //use the optimizing pure strategy based on that
-   
-        return deceptiveStrategy();
-        
+        if (optimal_strategy){
+            strategyCount++;
+            if(intervalCount == 5)
+            {
+                computeProbabilities();
+                oppActions = new Action[5];
+                intervalCount = 0;
+            }
+            else{
+            oppActions[intervalCount]=lastOpponentMove;
+            }
+            intervalCount++;
+            return optimalStrategy();
+        }
+        else{
+            strategyCount++;
+            return deceptiveStrategy();
+        }
    
     }
     // Lures opponents to make certain moves and then counter those moves under the
     // assumption that the opponent is scanning our moves
     private Action deceptiveStrategy(){
-        if (deceptionCount==0 || deceptionCount%5==0){
-        if (deceptionCount==0){
+        if (deceptionCount==0 || deceptionCount==10){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
-        deception = moves[randomNum];}
-        else{
-        deception = deceptionCounter;
-        }
+        deception = moves[randomNum];
         if (deception==Action.ROCK){
             deceptionCounter = Action.LIZARD;
         }
@@ -89,12 +108,20 @@ import java.util.ArrayList;
             deceptionCounter = Action.SCISSORS;
         }
         }
-        if (deceptionCount%10 < 5){
+        else if (deceptionCount <5){
+            deceptionCount++;
+            return deception;
+        }
+        else if (deceptionCount <10){
+            deceptionCount++;
+            return deceptionCounter;
+        }
+        else if (deceptionCount <15){
+            deceptionCount++;
             return deception;
         }
         deceptionCount++;
         return deceptionCounter;
-        
         
     }
     private Action optimalStrategy(){
