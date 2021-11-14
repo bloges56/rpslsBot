@@ -7,23 +7,40 @@ import java.util.ArrayList;
   * @author Paul, Brady 
   */
   public class UltimateBot implements RoShamBot {
-    private int numWin = 0; // number of wins
+    private int numFreqLoss = 0; // number of wins for frequency strategy
+    private int numDecLoss = 0; // number of wins for deceptive strategy
+
+
+
+
     private boolean defaultStrategy = true; // default move is optimal strategy
     private Action[] moves = {Action.ROCK, Action.PAPER,Action.SCISSORS,Action.LIZARD,Action.SPOCK};
+
+
+
     private Action deception; //random move selection 
-    private Action deceptionCounter; 
+    private Action deceptionCounter; //counter
     private int deceptionCount = 0; //deception made from 0-5, 10-15
 
-    private int[] actionCounts = {0, 0, 0, 0, 0};
     private int intervalCount = 0;
-    //store counterations for each action
-    private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f};
+
     
-    private List<Action> moveTracker = new ArrayList<Action>();
-    //switch to some random strategy for set amount of moves
-        //pick two moves at random and set probabilty to .5
-    private List<Action> totalOppMoves = new ArrayList<Action>();
-    private List<Action> totalMyMoves = new ArrayList<Action>();
+
+    
+    private int[] actionCounts = {0, 0, 0, 0, 0}; //store counterations for each action
+    private float[] probabilites = {1.f, 0.f, 0.f, 0.f, 0.f}; // probabilites for 
+    
+    
+    
+    private List<Action> totalOppMoves = new ArrayList<Action>(); //tracks opponent moves
+
+    private List<Action> totalFreqMoves = new ArrayList<Action>(); //tracks my moves for optimal strategy
+    private List<Action> totalPredMoves = new ArrayList<Action>(); //tracks my moves for predict strategy
+
+
+
+
+
     /** Returns an action according to the mixed strategy (0.5, 0.5, 0, 0, 0).
       * 
       * @param lastOpponentMove the action that was played by the opponent on
@@ -34,22 +51,7 @@ import java.util.ArrayList;
     public Action getNextMove(Action lastOpponentMove) {
         intervalCount++;
         // defaultstrategy is optimal strategy, but switches to mixed strategy if optimal strategy doesn't work
-        if (defaultStrategy){
-        totalOppMoves.add(lastOpponentMove);
-        if (totalOppMoves.size() == 10){
-        computeWins();  //checks how many wins we have using optimal strategy
-        if (numWin<=3){
-            defaultStrategy = false;
-        }
-        totalOppMoves = new ArrayList<Action>();
-        totalMyMoves = new ArrayList<Action>();
-        }
-    
-        computeProbabilities();
         
-        return optimalStrategy();
-        
-        }
         // switches to mixed strategy if defaultStrategy is false
      
         //find current pure strategy being used by opponent
@@ -62,7 +64,7 @@ import java.util.ArrayList;
     // Lures opponents to make certain moves and then counter those moves under the
     // assumption that the opponent is scanning our moves
     private Action deceptiveStrategy(){
-        if (deceptionCount==0 || deceptionCount==10){
+        if (deceptionCount==0){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
         deception = moves[randomNum];
         if (deception==Action.ROCK){
@@ -89,15 +91,15 @@ import java.util.ArrayList;
             deceptionCount++;
             return deceptionCounter;
         }
-        else if (deceptionCount <15){
-            deceptionCount++;
-            return deception;
-        }
-        deceptionCount++;
-        return deceptionCounter;
+       
         
         
     }
+
+    private Action predictStrategy(){
+
+    }
+
     private Action optimalStrategy(){
        
     
@@ -141,7 +143,7 @@ import java.util.ArrayList;
         //calculate oppenent's probablity of what action they take next turn
         //assign probability of our action based on that
     //order: rock, paper, scissors, lizard, and spock
-    private void computeProbabilities()
+    private void computeOptimalFreq()
     {
         
         
@@ -184,32 +186,57 @@ import java.util.ArrayList;
             fourth_prob, 
             fifth_prob};
     }
-    //compute wins based on opponent and my moves
-    private void computeWins(){
-    int tempWin = 0;
-    for (int i=0; i<totalMyMoves.size();i++){
-        if(totalMyMoves.get(i)==Action.ROCK && 
-        (totalOppMoves.get(i)==Action.SCISSORS || totalOppMoves.get(i)==Action.LIZARD)){
-            tempWin ++;
+    //compute losses based on opponent and my moves
+    private void computeLoss(){
+    int tempFreqLoss = 0;
+    int tempPredLoss = 0;
+    for (int i=0; i<totalOppMoves.size();i++){
+        if(totalOppMoves.get(i)==Action.ROCK){ 
+             
+        if (totalFreqMoves.get(i)==Action.SCISSORS || totalFreqMoves.get(i)==Action.LIZARD)){
+            tempFreqLoss++;
         }
-        else if(totalMyMoves.get(i)==Action.PAPER && 
-        (totalOppMoves.get(i)==Action.ROCK || totalOppMoves.get(i)==Action.SPOCK)){
-            tempWin ++;
+        if (totalPredMoves.get(i)==Action.SCISSORS || totalPredMoves.get(i)==Action.LIZARD)){
+            tempDecLoss++;
         }
-        else if(totalMyMoves.get(i)==Action.SCISSORS && 
-        (totalOppMoves.get(i)==Action.PAPER || totalOppMoves.get(i)==Action.LIZARD)){
-            tempWin ++;
         }
-        else if(totalMyMoves.get(i)==Action.LIZARD && 
-        (totalOppMoves.get(i)==Action.PAPER || totalOppMoves.get(i)==Action.SPOCK)){
-            tempWin ++;
+        else if(totalOppMoves.get(i)==Action.PAPER{ 
+        if (totalFreqMoves.get(i)==Action.ROCK || totalFreqMoves.get(i)==Action.SPOCK)){
+            tempFreqLoss++;
         }
-        else if(totalMyMoves.get(i)==Action.SPOCK && 
-        (totalOppMoves.get(i)==Action.ROCK || totalOppMoves.get(i)==Action.SCISSORS)){
-            tempWin ++;
+         if (totalPredMoves.get(i)==Action.ROCK || totalPredMoves.get(i)==Action.SPOCK)){
+            tempDecLoss++;
+        }
+        }
+        else if(totalOppMoves.get(i)==Action.SCISSORS{
+        if (totalFreqMoves.get(i)==Action.PAPER || totalFreqMoves.get(i)==Action.LIZARD)){
+            tempFreqLoss++;
+        }
+        if (totalPredMoves.get(i)==Action.PAPER || totalPredMoves.get(i)==Action.LIZARD)){
+            tempDecLoss++;
+        }
+        }
+        else if(totalOppMoves.get(i)==Action.LIZARD{ 
+        if (totalFreqMoves.get(i)==Action.PAPER || totalFreqMoves.get(i)==Action.SPOCK)){
+            tempFreqLoss++;
+        }
+        if (totalPredMoves.get(i)==Action.PAPER || totalPredMoves.get(i)==Action.SPOCK)){
+            tempDecLoss++;
+        }
+        }
+        else{
+        if (totalFreqMoves.get(i)==Action.ROCK || totalFreqMoves.get(i)==Action.SCISSORS)){
+            tempFreqLoss++;
+        }
+        if (totalPredMoves.get(i)==Action.ROCK || totalPredMoves.get(i)==Action.SCISSORS)){
+            tempDecLoss++;
+        }
         }
         
     }
-    numWin = tempWin;
+    numFreqLoss =tempFreqLoss;
+    numDecLoss = tempDecLoss;
+    
+
     }
 }
