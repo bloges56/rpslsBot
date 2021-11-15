@@ -158,7 +158,7 @@ import static java.lang.Math.max;
                 }
             }
             
-            Action MHMove = MatchHistoryMove(OpponentStr, min(OpponentStr.length(),320));
+            Action MHMove = MatchHistoryMove(OpponentStr, min(OpponentStr.length(),160));
             MHStr = convertToString(MHMove) + MHStr;
             
             Action FAMove_X = FrequencyAnalysisMove(OpponentStr,min(OpponentStr.length(),10));
@@ -179,7 +179,7 @@ import static java.lang.Math.max;
             Action doubleCounterFAMove_X = doubleCounterFA(10);
             doubleCounterFAStr_X = convertToString(doubleCounterFAMove_X) + doubleCounterFAStr_X;
             
-            Action CounterMHMove = CounterMatchHistoryMove(OpponentStr, min(OpponentStr.length(),320));
+            Action CounterMHMove = CounterMatchHistoryMove(OpponentStr, min(OpponentStr.length(),160));
             CounterMHStr = convertToString(CounterMHMove) + CounterMHStr; 
             
             Action CApeMove = FrequencyAnalysisMove(bestStr,min(bestStr.length(),1));
@@ -189,6 +189,15 @@ import static java.lang.Math.max;
             NashStr = convertToString(NashMove) + NashStr;
             
             Action [] moves = new Action [] {MHMove, FAMove_V, counterFAMove_V, doubleCounterFAMove_V, FAMove_X, counterFAMove_X, doubleCounterFAMove_X, CounterMHMove, CApeMove, NashMove};
+            
+            /////////////
+            Random randomGenerator = new Random();
+            int randInt = randomGenerator.nextInt(7);
+            if (randInt == 3){
+                bestStr = convertToString(NashMove) + bestStr;
+                return NashMove;
+            }
+            ////////////
             
             for (int i =0; i < min(10, bestStr.length()); i++){ 
                 //Nash Protection
@@ -212,8 +221,8 @@ import static java.lang.Math.max;
                 //return NashMove;
                 bestMove = moves[bestIndex];
                 Action flipMove = counter(bestMove);
-                bestStr = convertToString(bestMove) + bestStr;
-                return flipMove;
+                bestStr = convertToString(NashMove) + bestStr;
+                return NashMove;
             }
             else{
                 bestMove = moves[bestIndex];
@@ -260,7 +269,7 @@ import static java.lang.Math.max;
         for (int i=0; i< min(10, best.length());i++){
                score += compareString(best.charAt(i), opponent.charAt(i));
         }
-        if (score < -2){
+        if (score < -1){
             return true; // We want to use Nash 
         }
         else{

@@ -148,7 +148,7 @@ import java.util.ArrayList;
         computeOptimalFreq();
         Action tempPred = predictStrategy();
         Action tempOpt = optimalStrategy();
-        if ((numPredLoss/predCount)<(numFreqLoss/freqCount)){
+        if (numPredLoss/predCount<numFreqLoss/freqCount){
             myLastMove = tempPred;
         }
         else{
@@ -184,7 +184,6 @@ import java.util.ArrayList;
                 myLastMove = nashEq();
             }
             else if(tempPFreq >= 0.4){
-                numPredLoss =0;
                 predCount = 0;
 
                 for (int i=0;i<predictCounts.length;i++){
@@ -197,7 +196,6 @@ import java.util.ArrayList;
 
             }
             else{
-                numFreqLoss =0;
                 freqCount =0;
                 for (int i=0;i<actionCounts.length;i++){
                     actionCounts[i] = 0;
