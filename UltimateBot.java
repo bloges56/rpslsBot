@@ -32,6 +32,9 @@ import java.util.ArrayList;
     private float[] probabilites = {0.f, 0.f, 0.f, 0.f, 0.f}; // probabilites for optimal strategy
     
     
+    private int[] decepMoves = {0,0,0,0,0};
+    private float[] deceProb = {0.f, 0.f, 0.f, 0.f, 0.f}; 
+
     private List<Action> totalOppMoves = new ArrayList<Action>(); //tracks opponent moves
 
     private List<Action> totalFreqMoves = new ArrayList<Action>(); //tracks my moves for optimal strategy
@@ -121,7 +124,7 @@ import java.util.ArrayList;
         
         if (nash==true){
             nashCounter++;
-            if (nashCounter ==5){
+            if (nashCounter ==10){
                 nashCounter =0;
                 nash = false;
                 totalOppMoves = new ArrayList<Action>();
@@ -145,7 +148,7 @@ import java.util.ArrayList;
         computeOptimalFreq();
         Action tempPred = predictStrategy();
         Action tempOpt = optimalStrategy();
-        if (numPredLoss<numFreqLoss){
+        if ((numPredLoss/predCount)<(numFreqLoss/freqCount)){
             myLastMove = tempPred;
         }
         else{
@@ -209,13 +212,19 @@ import java.util.ArrayList;
         }
         if (deceptive==false){
             double coinFlip = Math.random();
-            if (coinFlip <=0){
+            if (coinFlip <=0.01){
                 deceptive = true;
             }
         }
         if (deceptive ==true){
             if (deceptionCount==10){
                 deceptionCount =0;
+                for (int i=0;i<decepMoves.length;i++){
+                    decepMoves[i] = 0;
+                }
+                for (int i=0;i<deceProb.length;i++){
+                    deceProb[i] = 0.f;
+                }
                 deceptive = false;
            }
             myLastMove =deceptiveStrategy();
@@ -234,34 +243,12 @@ import java.util.ArrayList;
     // Lures opponents to make certain moves and then counter those moves under the
     // assumption that the opponent is scanning our moves
     private Action deceptiveStrategy(){
-        if (deceptionCount<=5){
+       
         int randomNum = ThreadLocalRandom.current().nextInt(0, 5);
         deception = moves[randomNum];
-        if (deception==Action.ROCK){
-            deceptionCounter = Action.LIZARD;
-        }
-        else if (deception==Action.PAPER){
-            deceptionCounter = Action.ROCK;
-        }
-        else if (deception ==Action.SCISSORS){
-            deceptionCounter = Action.PAPER;
-        }
-        else if (deception == Action.LIZARD){
-            deceptionCounter = Action.SPOCK;
-        }
-        else{
-            deceptionCounter = Action.SCISSORS;
-        }
         deceptionCount++;
         return deception;
-        }
-    
-        deceptionCount++;
-        return deceptionCounter;
-       
-        
-        
-    }
+}
 
 
 
