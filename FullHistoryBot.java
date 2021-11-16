@@ -192,25 +192,20 @@ import static java.lang.Math.max;
             
             /////////////
             Random randomGenerator = new Random();
-            int randInt = randomGenerator.nextInt(9);
+            int randInt = randomGenerator.nextInt(5);
             if (randInt == 0){
                 bestStr = convertToString(NashMove) + bestStr;
                 return NashMove;
             }
             ////////////
             
-            for (int i =0; i < min(10, bestStr.length()); i++){ 
-                //Nash Protection
-                bestScore += compareString(bestStr.charAt(i), OpponentStr.charAt(i));
-            }
+//             for (int i =0; i < min(10, bestStr.length()); i++){ 
+//                 //Nash Protection
+//                 bestScore += compareString(bestStr.charAt(i), OpponentStr.charAt(i));
+//             }
+        
             
-            if (bestScore < -2){ //If our actual results have been bad
-                bestMove = NashMove;
-                bestStr = convertToString(bestMove) + bestStr; //This updates the history of the moves actually used by our bot   
-                return bestMove;
-            }
-            
-            if (bestScore < 0){ //If all our strategies are losing
+            if (bestScore <= 0){ //If all our strategies are losing
                 bestMove = NashMove;
                 bestStr = convertToString(bestMove) + bestStr; //This updates the history of the moves actually used by our bot                
                 return bestMove;
