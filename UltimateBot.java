@@ -195,7 +195,7 @@ import java.util.ArrayList;
                 myLastMove = tempOpt;
 
             }
-            else{
+            else if(tempFreq >=0.4){
                 freqCount =0;
                 for (int i=0;i<actionCounts.length;i++){
                     actionCounts[i] = 0;
